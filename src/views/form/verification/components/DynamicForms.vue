@@ -26,7 +26,7 @@
             label="活动地点"
             prop="address"
             :rules="[
-              { required: true, message: '请输入活动地址', trigger: 'blur' },
+              { required: true, validator: checkAddress, trigger: 'blur' },
             ]"
           >
             <el-input
@@ -48,6 +48,14 @@
 export default {
   name: 'DynamicForms',
   data() {
+    const checkName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入名字'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       labelWidth: '100px',
 
@@ -57,17 +65,26 @@ export default {
           address: '',
         },
       ],
+
+      checkAddress: (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请输入地址'))
+        } else {
+          callback()
+        }
+      },
+
       dynamicFormRules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { required: true, validator: checkName, trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
       },
     }
   },
   methods: {
-    addForm(formName) {
-      this['dynamicForm'].push({
+    addForm(formName, index) {
+      this.dynamicForm.push({
         name: '',
         address: '',
       })
